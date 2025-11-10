@@ -1,126 +1,110 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Letreiro Motivacional</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Letreiro Saltitante - Estilo DVD</title>
 
-  <style>
-    /* ======== ESTILOS GERAIS ======== */
-    body {
-      margin: 0;
-      background: linear-gradient(135deg, #111, #222);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-      color: white;
-      font-family: 'Poppins', sans-serif;
-    }
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    /* ======== ÁREA DO LETREIRO ======== */
-    .letreiro-container {
-      position: relative;
-      width: 90vw;
-      max-width: 1200px;
-      height: 100px;
-      border: 3px solid #00ffcc;
-      border-radius: 15px;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: 0 0 20px rgba(0, 255, 200, 0.3);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  body {
+    background-color: black;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-    /* ======== TEXTO DO LETREIRO ======== */
-    .texto {
-      position: absolute;
-      white-space: nowrap;
-      font-size: clamp(1rem, 4vw, 2rem);
-      font-weight: 600;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
-      animation: deslizar 8s linear infinite alternate;
-    }
+  /* ======== TEXTO ======== */
+  .texto {
+    position: absolute;
+    font-size: clamp(1.2rem, 4vw, 2.5rem);
+    font-weight: bold;
+    color: #00ffff;
+    text-shadow: 0 0 20px #00ffff;
+    user-select: none;
+    white-space: nowrap;
+  }
 
-    /* ======== ANIMAÇÃO DO TEXTO ======== */
-    @keyframes deslizar {
-      0% {
-        transform: translateX(-100%);
-      }
-      100% {
-        transform: translateX(100%);
-      }
-    }
+  /* ======== CONTROLE DE VELOCIDADE ======== */
+  .controle {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    font-size: 0.9rem;
+  }
 
-    /* ======== RESPONSIVIDADE ======== */
-    @media (max-width: 768px) {
-      .letreiro-container {
-        height: 80px;
-      }
-      .texto {
-        font-size: clamp(0.8rem, 5vw, 1.4rem);
-      }
-    }
-
-    @media (min-width: 1600px) {
-      .letreiro-container {
-        height: 150px;
-      }
-      .texto {
-        font-size: 3rem;
-      }
-    }
-
-    /* ======== CONTROLE DE VELOCIDADE ======== */
-    .controle {
-      position: absolute;
-      bottom: 20px;
-      width: 90%;
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: #ddd;
-      font-size: 0.9rem;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: #00ffcc;
-      cursor: pointer;
-    }
-  </style>
+  input[type="range"] {
+    width: 200px;
+    accent-color: #00ffff;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
 
-  <div class="letreiro-container">
-    <div class="texto" id="texto">
-      "Acredite no seu potencial — cada passo te aproxima do impossível."
-    </div>
-  </div>
+  <div class="texto" id="texto">"Acredite no seu potencial!"</div>
 
   <div class="controle">
-    <label for="velocidade">Velocidade do letreiro:</label>
-    <input type="range" id="velocidade" min="2" max="15" value="8">
+    <label for="velocidade">Velocidade:</label><br>
+    <input type="range" id="velocidade" min="1" max="20" value="8">
   </div>
 
-  <script>
-    const controle = document.getElementById("velocidade");
-    const texto = document.getElementById("texto");
+<script>
+  const texto = document.getElementById("texto");
+  const controle = document.getElementById("velocidade");
 
-    // Atualiza a velocidade do letreiro conforme o usuário move o controle
-    controle.addEventListener("input", () => {
-      const valor = controle.value;
-      texto.style.animationDuration = `${valor}s`;
-    });
-  </script>
+  let x = 100, y = 100; // posição inicial
+  let dx = 3, dy = 3;   // direção e velocidade
+  let velocidade = 8;
 
+  function moverTexto() {
+    const largura = window.innerWidth;
+    const altura = window.innerHeight;
+    const rect = texto.getBoundingClientRect();
+
+    x += dx;
+    y += dy;
+
+    // colisão horizontal
+    if (x + rect.width >= largura || x <= 0) {
+      dx = -dx;
+      mudarCor();
+    }
+
+    // colisão vertical
+    if (y + rect.height >= altura || y <= 0) {
+      dy = -dy;
+      mudarCor();
+    }
+
+    texto.style.left = `${x}px`;
+    texto.style.top = `${y}px`;
+
+    setTimeout(moverTexto, velocidade);
+  }
+
+  function mudarCor() {
+    // muda a cor aleatoriamente ao bater na borda
+    texto.style.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+    texto.style.textShadow = `0 0 20px ${texto.style.color}`;
+  }
+
+  controle.addEventListener("input", () => {
+    velocidade = 25 - controle.value; // mais valor = mais rápido
+  });
+
+  moverTexto();
+</script>
 </body>
 </html>
-
