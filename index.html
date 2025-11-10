@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letreiro Motivacional</title>
+  <style>
+    /* Define o corpo da página */
+    body {
+      background-color: #111;
+      display: flex;
+      justify-content: center; /* Centraliza horizontalmente */
+      align-items: center;     /* Centraliza verticalmente */
+      height: 100vh;           /* Altura total da tela */
+      margin: 0;
+    }
+
+    /* Área do letreiro */
+    .letreiro-container {
+      position: relative;
+      width: 600px;   /* Largura do letreiro */
+      height: 80px;   /* Altura do letreiro */
+      overflow: hidden; /* Esconde o texto quando sai da área */
+      border: 2px solid #00ffcc;
+      border-radius: 15px;
+      background-color: #222;
+      padding: 20px; /* Espaço livre em torno do letreiro */
+      text-align: center;
+    }
+
+    /* Texto do letreiro */
+    .letreiro-texto {
+      position: absolute;
+      white-space: nowrap;
+      color: #00ffcc;
+      font-size: 24px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="letreiro-container">
+    <div class="letreiro-texto" id="texto">"Acredite no seu potencial e vá além!"</div>
+  </div>
+
+  <script>
+    const texto = document.getElementById('texto');
+    const container = document.querySelector('.letreiro-container');
+
+    let pos = 0; // posição inicial
+    let direcao = 1; // 1 = direita, -1 = esquerda
+    let velocidade = 2; // controle da velocidade (quanto maior, mais rápido)
+
+    function moverLetreiro() {
+      pos += direcao * velocidade;
+
+      // se o texto chegar ao limite direito, muda direção
+      if (pos + texto.offsetWidth >= container.offsetWidth) {
+        direcao = -1;
+      }
+
+      // se o texto chegar ao limite esquerdo, muda direção novamente
+      if (pos <= 0) {
+        direcao = 1;
+      }
+
+      texto.style.left = pos + 'px';
+      requestAnimationFrame(moverLetreiro); // animação suave
+    }
+
+    moverLetreiro(); // inicia o movimento
+  </script>
+
+</body>
+</html>
