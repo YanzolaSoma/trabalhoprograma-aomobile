@@ -3,74 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Letreiro Motivacional</title>
+  <title>Letreiro Motivacional Responsivo</title>
+
   <style>
-    /* Define o corpo da página */
+    /* ======= ESTILO GERAL ======= */
     body {
-      background-color: #111;
+      background-color: #0d0d0d;
       display: flex;
-      justify-content: center; /* Centraliza horizontalmente */
-      align-items: center;     /* Centraliza verticalmente */
-      height: 100vh;           /* Altura total da tela */
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
+      padding: 0;
     }
 
-    /* Área do letreiro */
+    /* ======= CONTAINER DO LETREIRO ======= */
     .letreiro-container {
       position: relative;
-      width: 600px;   /* Largura do letreiro */
-      height: 80px;   /* Altura do letreiro */
-      overflow: hidden; /* Esconde o texto quando sai da área */
+      width: 80vw;        /* Responsivo: 80% da largura da tela */
+      max-width: 700px;   /* Limite em telas grandes */
+      height: 15vh;       /* Responsivo: 15% da altura */
+      max-height: 100px;  
+      overflow: hidden;
       border: 2px solid #00ffcc;
       border-radius: 15px;
-      background-color: #222;
-      padding: 20px; /* Espaço livre em torno do letreiro */
+      background-color: #1a1a1a;
+      padding: 15px;
       text-align: center;
+      box-sizing: border-box;
     }
 
-    /* Texto do letreiro */
+    /* ======= TEXTO DO LETREIRO ======= */
     .letreiro-texto {
       position: absolute;
       white-space: nowrap;
       color: #00ffcc;
-      font-size: 24px;
-      font-family: 'Poppins', sans-serif;
+      font-family: "Poppins", sans-serif;
       font-weight: bold;
+      font-size: 4vw; /* Tamanho de texto responsivo */
+      text-shadow: 0 0 5px #00ffcc;
+    }
+
+    /* ======= AJUSTE EM TELAS PEQUENAS ======= */
+    @media (max-width: 600px) {
+      .letreiro-container {
+        padding: 10px;
+        height: 12vh;
+      }
+
+      .letreiro-texto {
+        font-size: 5vw; /* aumenta um pouco no celular */
+      }
+    }
+
+    /* ======= SLIDER DE VELOCIDADE ======= */
+    .controle {
+      position: absolute;
+      bottom: 20px;
+      width: 80%;
+      text-align: center;
+      color: #00ffcc;
+      font-family: "Poppins", sans-serif;
+    }
+
+    input[type="range"] {
+      width: 60%;
+      accent-color: #00ffcc;
     }
   </style>
 </head>
+
 <body>
 
   <div class="letreiro-container">
     <div class="letreiro-texto" id="texto">"Acredite no seu potencial e vá além!"</div>
   </div>
 
+  <!-- Controle de velocidade -->
+  <div class="controle">
+    <label for="velocidade">Velocidade:</label>
+    <input type="range" id="velocidade" min="1" max="10" value="3">
+  </div>
+
   <script>
     const texto = document.getElementById('texto');
     const container = document.querySelector('.letreiro-container');
+    const controleVel = document.getElementById('velocidade');
 
-    let pos = 0; // posição inicial
-    let direcao = 1; // 1 = direita, -1 = esquerda
-    let velocidade = 2; // controle da velocidade (quanto maior, mais rápido)
+    let pos = 0;
+    let direcao = 1;
+    let velocidade = parseInt(controleVel.value);
+
+    controleVel.addEventListener('input', () => {
+      velocidade = parseInt(controleVel.value);
+    });
 
     function moverLetreiro() {
       pos += direcao * velocidade;
 
-      // se o texto chegar ao limite direito, muda direção
+      // Verifica limites
       if (pos + texto.offsetWidth >= container.offsetWidth) {
         direcao = -1;
-      }
-
-      // se o texto chegar ao limite esquerdo, muda direção novamente
-      if (pos <= 0) {
+      } else if (pos <= 0) {
         direcao = 1;
       }
 
       texto.style.left = pos + 'px';
-      requestAnimationFrame(moverLetreiro); // animação suave
+      requestAnimationFrame(moverLetreiro);
     }
 
-    moverLetreiro(); // inicia o movimento
+    moverLetreiro();
   </script>
 
 </body>
